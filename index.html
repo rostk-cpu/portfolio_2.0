@@ -233,7 +233,7 @@
 Bildungseinrichtung Zhytomyr,
 Ukraine</div>
       <div class="edu-desc">Schulabschluss mit Schwerpunkt auf logischem Denken und technischen Fächer / Operateur der Informationsaufbereitung
-und Software
+und Software /
         Erste Berührungspunkte mit Informatik und Programmierung.</div>
     </div>
 
@@ -328,30 +328,28 @@ und Software
     </div>
 
     <div class="form reveal">
-      <div class="f-group">
-        <label class="f-label">Ihr Name</label>
-        <input type="text" class="f-input" placeholder="Max Müller">
-      </div>
-      <div class="f-group">
-        <label class="f-label">E-Mail</label>
-        <input type="email" class="f-input" placeholder="kontakt@firma.de">
-      </div>
-      <div class="f-group">
-        <label class="f-label">Unternehmen</label>
-        <input type="text" class="f-input" placeholder="Muster GmbH">
-      </div>
-      <div class="f-group">
-        <label class="f-label">Nachricht</label>
-        <textarea class="f-textarea" placeholder="Ihre Nachricht..."></textarea>
-      </div>
-      <button class="btn-primary"
-        style="width:100%;border:none;cursor:none;font-size:11px"
-        onclick="this.textContent='✓ Gesendet!';
-                 this.style.background='#13131f';
-                 this.style.color='var(--purple)';
-                 this.style.border='1px solid var(--purple)'">
-        Nachricht senden
-      </button>
+      <form id="contact-form" action="https://formspree.io/f/mqeyrvqq" method="POST">
+        <div class="f-group">
+          <label class="f-label">Ihr Name</label>
+          <input type="text" name="name" class="f-input" placeholder="Max Müller" required>
+        </div>
+        <div class="f-group">
+          <label class="f-label">E-Mail</label>
+          <input type="email" name="email" class="f-input" placeholder="kontakt@firma.de" required>
+        </div>
+        <div class="f-group">
+          <label class="f-label">Unternehmen</label>
+          <input type="text" name="unternehmen" class="f-input" placeholder="Muster GmbH">
+        </div>
+        <div class="f-group">
+          <label class="f-label">Nachricht</label>
+          <textarea name="message" class="f-textarea" placeholder="Ihre Nachricht..." required></textarea>
+        </div>
+        <button type="submit" id="submit-btn" class="btn-primary"
+          style="width:100%;border:none;cursor:none;font-size:11px">
+          Nachricht senden
+        </button>
+      </form>
     </div>
 
   </div>
@@ -427,5 +425,31 @@ und Software
 <script src="js/main.js" defer></script>
 <script src="js/dodecahedron.js" defer></script>
 <script src="js/cat.js" defer></script>
+<script>
+  const form = document.getElementById('contact-form');
+  const btn  = document.getElementById('submit-btn');
+  if (form) {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      btn.textContent = 'Wird gesendet...';
+      btn.disabled = true;
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (response.ok) {
+        btn.textContent = '✓ Gesendet!';
+        btn.style.background = '#13131f';
+        btn.style.color = 'var(--purple)';
+        btn.style.border = '1px solid var(--purple)';
+        form.reset();
+      } else {
+        btn.textContent = '✗ Fehler — bitte erneut versuchen';
+        btn.disabled = false;
+      }
+    });
+  }
+</script>
 </body>
 </html>
